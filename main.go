@@ -140,6 +140,10 @@ func getConfigPath() string {
 func readConfig(cfgPath string) (Config, error) {
 	file, err := os.Open(cfgPath)
 	if err != nil {
+		if os.IsNotExist(err) {
+			// If the config file does not exist, return an empty config without error
+			return Config{Aliases: map[string]string{}}, nil
+		}
 		fmt.Fprintf(os.Stderr, "Error opening config file: %v\n", err)
 		return Config{}, err
 	}
@@ -151,6 +155,10 @@ func readConfig(cfgPath string) (Config, error) {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error decoding config file: %v\n", err)
 		return Config{}, err
+	}
+
+	if config.Aliases == nil {
+		config.Aliases = make(map[string]string)
 	}
 
 	return config, nil
