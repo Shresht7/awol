@@ -19,7 +19,7 @@ func main() {
 
 	// Check for help flag and show the help message
 	if args.Help {
-		helpMessage()
+		showHelp()
 		return
 	}
 
@@ -48,7 +48,7 @@ func main() {
 		removeAlias(config, cfgPath)
 		return
 	case "help":
-		helpMessage()
+		showHelp()
 		return
 	case "version":
 		showVersion()

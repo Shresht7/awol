@@ -47,7 +47,7 @@ func parseCommandLineArgs() Args {
 }
 
 // Prints the help message for the command-line
-func helpMessage() {
+func showHelp() {
 	help := strings.Builder{}
 	help.WriteString("awol - a wake-on-lan utility\n\n")
 	help.WriteString("Usage: awol <mac>\n\n")
