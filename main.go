@@ -25,7 +25,21 @@ func main() {
 	// Create the magic packet
 	magicPacket := makeMagicPacket(mac)
 
-	fmt.Printf("Magic Packet: %x\n", magicPacket)
+	// Send the magic packet via UDP broadcast (standard port for Wake-on-LAN is 9)
+	conn, err := net.Dial("udp", "255.255.255.255:9")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error establishing UDP connection: %v\n", err)
+		return
+	}
+	defer conn.Close()
+
+	_, err = conn.Write(magicPacket)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error sending magic packet: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Magic packet sent to %s\n", macAddress)
 }
 
 // makeMagicPacket creates a Wake-on-LAN magic packet for the given hardware address.
