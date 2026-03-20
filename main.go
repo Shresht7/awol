@@ -5,15 +5,25 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"strings"
 )
 
 func main() {
+	// Check if a MAC address is provided as a command-line argument
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: wake <mac_address>")
+		fmt.Fprintln(os.Stderr, "Error: No MAC address provided.")
+		helpMessage()
 		return
 	}
 
-	macAddress := os.Args[1]
+	// Check for help flag and show the help message
+	argument := os.Args[1]
+	if argument == "-h" || argument == "--help" || argument == "help" {
+		helpMessage()
+		return
+	}
+	// otherwise, treat the argument as a MAC address
+	macAddress := argument
 
 	// Parse the MAC address
 	mac, err := net.ParseMAC(macAddress)
@@ -57,4 +67,14 @@ func makeMagicPacket(hardwareAddress net.HardwareAddr) []byte {
 	}
 
 	return packet.Bytes()
+}
+
+// Prints the help message for the command-line
+func helpMessage() {
+	help := strings.Builder{}
+	help.WriteString("awol - a wake-on-lan utility\n\n")
+	help.WriteString("Usage: awol <mac_address>\n\n")
+	help.WriteString("Example:\n")
+	help.WriteString("  awol A1:2B:C3:4D:5E:F7\n")
+	fmt.Print(help.String())
 }
