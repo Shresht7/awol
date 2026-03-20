@@ -36,6 +36,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error reading config: %v\n", err)
 		return
 	}
+	config.merge(args)
 
 	switch args.SubCmd {
 	case "list":
@@ -77,7 +78,7 @@ func main() {
 	magicPacket := makeMagicPacket(mac)
 
 	// Send the magic packet via UDP broadcast (standard port for Wake-on-LAN is 9)
-	conn, err := net.Dial("udp", fmt.Sprintf("255.255.255.255:%d", args.Port))
+	conn, err := net.Dial("udp", fmt.Sprintf("255.255.255.255:%d", config.Port))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error establishing UDP connection: %v\n", err)
 		return

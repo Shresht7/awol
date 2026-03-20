@@ -13,7 +13,15 @@ import (
 
 // Config struct to hold the aliases from the config file
 type Config struct {
+	Port    int               `json:"port"`
 	Aliases map[string]string `json:"aliases"`
+}
+
+func defaultConfig() Config {
+	return Config{
+		Port:    9,
+		Aliases: make(map[string]string),
+	}
 }
 
 // getConfigPath retrieves the path to the configuration file from the environment variable "AWOL_CONFIG_PATH".
@@ -36,7 +44,7 @@ func readConfig(cfgPath string) (Config, error) {
 	if err != nil {
 		if os.IsNotExist(err) {
 			// If the config file does not exist, return an empty config without error
-			return Config{Aliases: map[string]string{}}, nil
+			return defaultConfig(), nil
 		}
 		fmt.Fprintf(os.Stderr, "Error opening config file: %v\n", err)
 		return Config{}, err
@@ -51,9 +59,19 @@ func readConfig(cfgPath string) (Config, error) {
 		return Config{}, err
 	}
 
+	defaultCfg := defaultConfig()
+	if config.Port == 0 {
+		config.Port = defaultCfg.Port
+	}
 	if config.Aliases == nil {
-		config.Aliases = make(map[string]string)
+		config.Aliases = defaultCfg.Aliases
 	}
 
 	return config, nil
+}
+
+func (c *Config) merge(args Args) {
+	if args.Port != 0 {
+		c.Port = args.Port
+	}
 }
