@@ -48,7 +48,6 @@ func main() {
 	case "help":
 		helpMessage()
 		return
-	case "wake":
 	default:
 	}
 
@@ -269,7 +268,7 @@ func parseCommandLineArgs() Args {
 	switch subcmd {
 	case "help":
 		*help = true
-	case "wake":
+	case "wake", "call", "recall":
 		mac = flag.Arg(1)
 	default:
 		mac = subcmd
