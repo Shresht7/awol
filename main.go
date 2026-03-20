@@ -23,6 +23,12 @@ func main() {
 		return
 	}
 
+	// Check for version flag and show the version information
+	if args.Version {
+		showVersion()
+		return
+	}
+
 	// Load the configuration file
 	cfgPath := getConfigPath()
 	config, err := readConfig(cfgPath)
@@ -43,6 +49,9 @@ func main() {
 		return
 	case "help":
 		helpMessage()
+		return
+	case "version":
+		showVersion()
 		return
 	default:
 	}
