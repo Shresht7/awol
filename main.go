@@ -35,10 +35,12 @@ func main() {
 
 	// The argument is expected to be a MAC address or an alias defined in the config
 	macAddress := argument
+	macAlias := ""
 
 	// Check if the provided MAC address is an alias in the config
-	if aliasMAC, exists := config.Aliases[argument]; exists {
-		macAddress = aliasMAC
+	if val, exists := config.Aliases[strings.ToLower(argument)]; exists {
+		macAddress = val
+		macAlias = argument
 	}
 
 	// Parse the MAC address
@@ -65,7 +67,11 @@ func main() {
 		return
 	}
 
-	fmt.Printf("Magic packet sent to %s\n", macAddress)
+	if macAlias != "" {
+		fmt.Printf("Magic packet sent to %s [%s]\n", macAlias, macAddress)
+	} else {
+		fmt.Printf("Magic packet sent to %s\n", macAddress)
+	}
 }
 
 // makeMagicPacket creates a Wake-on-LAN magic packet for the given hardware address.
