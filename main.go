@@ -291,6 +291,8 @@ func helpMessage() {
 	help.WriteString("  list\t\t\tList all defined aliases in the config file\n")
 	help.WriteString("  alias <alias> <mac>\tDefine a new alias for a MAC address in the config file\n")
 	help.WriteString("  remove <alias>\tRemove an existing alias from the config file\n\n")
+	help.WriteString("Flags:\n")
+	help.WriteString("  --port <number>\tSpecify the port number to send the magic packet to (default: 9)\n\n")
 	help.WriteString("Example:\n")
 	help.WriteString("  awol A1:2B:C3:4D:5E:F7\t# Send magic packet to the specified MAC address\n")
 	help.WriteString("  awol skynet --port 7\t\t# Send magic packet to the specified MAC address using an alias on port 7\n")

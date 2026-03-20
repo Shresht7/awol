@@ -17,7 +17,34 @@ Example:
 
 ```bash
 awol A1:2B:C3:4D:5E:F7 # Send magic packet to the specified MAC address
-awol skynet # Send magic packet to the specified MAC address using an alias
+awol wake skynet # Send magic packet to the specified MAC address using an alias
+```
+
+### Options
+
+- `--port <number>`: Specify the port number to send the magic packet to (default: 9)
+
+### Configuration
+
+You can define aliases for MAC addresses in a config file, which is stored at `~/.config/awol/config.json`. This allows you to use easy-to-remember names instead of typing out the full MAC address each time.
+
+```json
+{
+  "aliases": {
+    "skynet": "A1:2B:C3:4D:5E:F7",
+    "hal": "B2:3C:D4:5E:F6:A8"
+  }
+}
+```
+
+You can use the `list` command to see all defined aliases, the `alias` command to add a new alias, and the `remove` command to delete an existing alias. 
+
+For example:
+
+```bash
+awol list # List all defined aliases
+awol alias skynet A1:2B:C3:4D:5E:F7 # Define a new alias 'skynet' for the specified MAC address
+awol remove skynet # Remove the alias 'skynet'
 ```
 
 ## Installation
