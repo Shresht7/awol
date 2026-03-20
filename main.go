@@ -100,17 +100,17 @@ func main() {
 // The magic packet consists of 6 bytes of 0xFF followed by 16 repetitions of the target MAC address.
 // The resulting byte slice can be sent over the network to wake up the target device.
 func makeMagicPacket(hardwareAddress net.HardwareAddr) []byte {
-	var packet bytes.Buffer
+	packet := make([]byte, 0, 6+16*len(hardwareAddress))
 
 	// 6 bytes of 0xFF
-	packet.Write(bytes.Repeat([]byte{0xFF}, 6))
+	packet = append(packet, bytes.Repeat([]byte{0xFF}, 6)...)
 
 	// 16 repetitions of the MAC address
 	for range 16 {
-		packet.Write(hardwareAddress)
+		packet = append(packet, hardwareAddress...)
 	}
 
-	return packet.Bytes()
+	return packet
 }
 
 // -------------
