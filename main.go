@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"net"
 	"os"
@@ -10,17 +11,18 @@ import (
 	"strings"
 )
 
+// ----
+// MAIN
+// ----
+
+// The main entrypoint of the application
 func main() {
-	// Check if a MAC address is provided as a command-line argument
-	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, "Error: No MAC address provided.")
-		helpMessage()
-		return
-	}
+
+	// Parse the command-line arguments
+	args := parseCommandLineArgs()
 
 	// Check for help flag and show the help message
-	argument := os.Args[1]
-	if argument == "-h" || argument == "--help" || argument == "help" {
+	if args.Help {
 		helpMessage()
 		return
 	}
@@ -34,13 +36,13 @@ func main() {
 	}
 
 	// The argument is expected to be a MAC address or an alias defined in the config
-	macAddress := argument
+	macAddress := args.Mac
 	macAlias := ""
 
 	// Check if the provided MAC address is an alias in the config
-	if val, exists := config.Aliases[strings.ToLower(argument)]; exists {
+	if val, exists := config.Aliases[strings.ToLower(args.Mac)]; exists {
 		macAddress = val
-		macAlias = argument
+		macAlias = args.Mac
 	}
 
 	// Parse the MAC address
@@ -54,7 +56,7 @@ func main() {
 	magicPacket := makeMagicPacket(mac)
 
 	// Send the magic packet via UDP broadcast (standard port for Wake-on-LAN is 9)
-	conn, err := net.Dial("udp", "255.255.255.255:9")
+	conn, err := net.Dial("udp", fmt.Sprintf("255.255.255.255:%d", args.Port))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error establishing UDP connection: %v\n", err)
 		return
@@ -74,6 +76,10 @@ func main() {
 	}
 }
 
+// ------------
+// MAGIC PACKET
+// ------------
+
 // makeMagicPacket creates a Wake-on-LAN magic packet for the given hardware address.
 // The magic packet consists of 6 bytes of 0xFF followed by 16 repetitions of the target MAC address.
 // The resulting byte slice can be sent over the network to wake up the target device.
@@ -90,6 +96,10 @@ func makeMagicPacket(hardwareAddress net.HardwareAddr) []byte {
 
 	return packet.Bytes()
 }
+
+// -------------
+// CONFIGURATION
+// -------------
 
 // Config struct to hold the aliases from the config file
 type Config struct {
@@ -110,6 +120,7 @@ func getConfigPath() string {
 	return cfgPath
 }
 
+// Reads the configuration file from the specified path and returns the Config struct
 func readConfig(cfgPath string) (Config, error) {
 	file, err := os.Open(cfgPath)
 	if err != nil {
@@ -127,6 +138,30 @@ func readConfig(cfgPath string) (Config, error) {
 	}
 
 	return config, nil
+}
+
+// ------------
+// COMMAND-LINE
+// ------------
+
+// The command-line arguments
+type Args struct {
+	Mac  string
+	Help bool
+	Port int
+}
+
+// Parse the command-line arguments and return an Args struct containing the parsed values
+func parseCommandLineArgs() Args {
+	help := flag.Bool("help", false, "Show help message")
+	port := flag.Int("port", 9, "Port number to send the magic packet to")
+	flag.Parse()
+
+	return Args{
+		Mac:  flag.Arg(0),
+		Help: *help,
+		Port: *port,
+	}
 }
 
 // Prints the help message for the command-line
