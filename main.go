@@ -198,6 +198,12 @@ func setAlias(config Config, cfgPath string) {
 
 	config.Aliases[strings.ToLower(alias)] = mac
 
+	// Ensure the config directory exists before saving the updated config
+	if err := os.MkdirAll(path.Dir(cfgPath), 0o755); err != nil {
+		fmt.Fprintf(os.Stderr, "Error creating config directory: %v\n", err)
+		return
+	}
+
 	// Save the updated config back to the file
 	file, err := os.Create(cfgPath)
 	if err != nil {
@@ -233,6 +239,12 @@ func removeAlias(config Config, cfgPath string) {
 
 	// Remove the alias from the config
 	delete(config.Aliases, strings.ToLower(alias))
+
+	// Ensure the config directory exists before saving the updated config
+	if err := os.MkdirAll(path.Dir(cfgPath), 0o755); err != nil {
+		fmt.Fprintf(os.Stderr, "Error creating config directory: %v\n", err)
+		return
+	}
 
 	// Save the updated config back to the file
 	file, err := os.Create(cfgPath)
