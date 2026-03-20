@@ -146,9 +146,10 @@ func readConfig(cfgPath string) (Config, error) {
 
 // The command-line arguments
 type Args struct {
-	Mac  string
-	Help bool
-	Port int
+	SubCmd string
+	Mac    string
+	Help   bool
+	Port   int
 }
 
 // Parse the command-line arguments and return an Args struct containing the parsed values
@@ -157,10 +158,22 @@ func parseCommandLineArgs() Args {
 	port := flag.Int("port", 9, "Port number to send the magic packet to")
 	flag.Parse()
 
+	mac := ""
+	subcmd := flag.Arg(0)
+	switch subcmd {
+	case "help":
+		*help = true
+	case "wake":
+		mac = flag.Arg(1)
+	default:
+		mac = subcmd
+	}
+
 	return Args{
-		Mac:  flag.Arg(0),
-		Help: *help,
-		Port: *port,
+		SubCmd: subcmd,
+		Mac:    mac,
+		Help:   *help,
+		Port:   *port,
 	}
 }
 
@@ -168,8 +181,9 @@ func parseCommandLineArgs() Args {
 func helpMessage() {
 	help := strings.Builder{}
 	help.WriteString("awol - a wake-on-lan utility\n\n")
-	help.WriteString("Usage: awol <mac_address>\n\n")
+	help.WriteString("Usage: awol <mac>\n\n")
 	help.WriteString("Example:\n")
-	help.WriteString("  awol A1:2B:C3:4D:5E:F7\n")
+	help.WriteString("  awol A1:2B:C3:4D:5E:F7\t# Send magic packet to the specified MAC address\n")
+	help.WriteString("  awol skynet --port 7\t\t# Send magic packet to the specified MAC address using an alias on port 7\n")
 	fmt.Print(help.String())
 }

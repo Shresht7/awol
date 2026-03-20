@@ -11,12 +11,13 @@ Use `--help` or `-h` to see the help message.
 To wake a computer, provide its MAC address as an argument to the `awol` command. For example:
 
 ```bash
-awol <mac_address>
+awol <mac>
 ```
 Example:
 
 ```bash
-awol A1:2B:C3:4D:5E:F7
+awol A1:2B:C3:4D:5E:F7 # Send magic packet to the specified MAC address
+awol skynet # Send magic packet to the specified MAC address using an alias
 ```
 
 ## Installation
