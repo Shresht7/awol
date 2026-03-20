@@ -2,9 +2,11 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"net"
 	"os"
+	"path"
 	"strings"
 )
 
@@ -22,8 +24,22 @@ func main() {
 		helpMessage()
 		return
 	}
-	// otherwise, treat the argument as a MAC address
+
+	// Load the configuration file
+	cfgPath := getConfigPath()
+	config, err := readConfig(cfgPath)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error reading config: %v\n", err)
+		return
+	}
+
+	// The argument is expected to be a MAC address or an alias defined in the config
 	macAddress := argument
+
+	// Check if the provided MAC address is an alias in the config
+	if aliasMAC, exists := config.Aliases[argument]; exists {
+		macAddress = aliasMAC
+	}
 
 	// Parse the MAC address
 	mac, err := net.ParseMAC(macAddress)
@@ -67,6 +83,44 @@ func makeMagicPacket(hardwareAddress net.HardwareAddr) []byte {
 	}
 
 	return packet.Bytes()
+}
+
+// Config struct to hold the aliases from the config file
+type Config struct {
+	Aliases map[string]string `json:"aliases"`
+}
+
+// getConfigPath retrieves the path to the configuration file from the environment variable "AWOL_CONFIG_PATH".
+// If the environment variable is not set, it defaults to "~/.config/awol/config.json".
+func getConfigPath() string {
+	cfgPath := os.Getenv("AWOL_CONFIG_PATH")
+	if cfgPath == "" {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return "~/.config/awol/config.json"
+		}
+		cfgPath = path.Join(home, ".config/awol/config.json")
+	}
+	return cfgPath
+}
+
+func readConfig(cfgPath string) (Config, error) {
+	file, err := os.Open(cfgPath)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error opening config file: %v\n", err)
+		return Config{}, err
+	}
+	defer file.Close()
+
+	var config Config
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&config)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error decoding config file: %v\n", err)
+		return Config{}, err
+	}
+
+	return config, nil
 }
 
 // Prints the help message for the command-line
