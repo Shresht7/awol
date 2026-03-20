@@ -78,7 +78,7 @@ func makeMagicPacket(hardwareAddress net.HardwareAddr) []byte {
 	packet.Write(bytes.Repeat([]byte{0xFF}, 6))
 
 	// 16 repetitions of the MAC address
-	for i := 0; i < 16; i++ {
+	for range 16 {
 		packet.Write(hardwareAddress)
 	}
 
