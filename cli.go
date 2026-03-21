@@ -64,7 +64,7 @@ func parseCommandLineArgs() Args {
 func showHelp() {
 	help := strings.Builder{}
 	help.WriteString("awol - a wake-on-lan utility\n\n")
-	help.WriteString("Usage: awol <mac>\n\n")
+	help.WriteString("Usage: awol <mac> [options]\n\n")
 	help.WriteString("Commands:\n")
 	help.WriteString("  wake <mac>\t\tSend a magic packet to the specified MAC address [aliases: call, recall]\n")
 	help.WriteString("  list\t\t\tList all defined aliases in the config file\n")
@@ -76,7 +76,7 @@ func showHelp() {
 	help.WriteString("  --help\t\tShow this help message\n\n")
 	help.WriteString("Example:\n")
 	help.WriteString("  awol A1:2B:C3:4D:5E:F7\t# Send magic packet to the specified MAC address\n")
-	help.WriteString("  awol wake skynet --port 7\t\t# Send magic packet to the specified MAC address using an alias on port 7\n")
+	help.WriteString("  awol wake skynet --port 7\t# Send magic packet to the specified MAC address using an alias on port 7\n")
 	fmt.Print(help.String())
 }
 
