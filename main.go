@@ -57,6 +57,12 @@ func main() {
 	default:
 	}
 
+	// No MAC address provided — show help
+	if args.Mac == "" {
+		showHelp()
+		os.Exit(1)
+	}
+
 	// The argument is expected to be a MAC address or an alias defined in the config
 	macAddress := args.Mac
 	macAlias := ""
