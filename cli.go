@@ -24,7 +24,7 @@ type Args struct {
 func parseCommandLineArgs() Args {
 	help := flag.Bool("help", false, "Show help message")
 	version := flag.Bool("version", false, "Show version information")
-	port := flag.Int("port", 9, "Port number to send the magic packet to")
+	port := flag.Int("port", 0, "Port number to send the magic packet to")
 	flag.Parse()
 
 	mac := ""
