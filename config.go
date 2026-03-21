@@ -14,7 +14,7 @@ import (
 
 // Config struct to hold the aliases from the config file
 type Config struct {
-	BroadcastAddress string            `json:"broadcast`
+	BroadcastAddress string            `json:"broadcast"`
 	Port             int               `json:"port"`
 	Aliases          map[string]string `json:"aliases"`
 }

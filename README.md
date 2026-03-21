@@ -47,6 +47,34 @@ awol alias skynet A1:2B:C3:4D:5E:F7 # Define a new alias 'skynet' for the specif
 awol remove skynet # Remove the alias 'skynet'
 ```
 
+### Configuration file
+
+The configuration file is stored at `~/.config/awol/config.json` by default. You can override this path by setting the environment variable `AWOL_CONFIG_PATH` to a custom file path.
+
+Config file fields:
+
+- `broadcast` or `BroadcastAddress`: The broadcast IP address used to send magic packets. Defaults to `255.255.255.255` if not set.
+- `port`: The UDP port to send the magic packet to. Defaults to `9` if not set.
+- `aliases`: A map of friendly names to MAC addresses. Alias keys are treated case-insensitively and are normalized to lowercase; stored MAC addresses will be normalized to uppercase.
+
+Example `config.json` with broadcast address and port:
+
+```json
+{
+  "broadcast": "192.168.1.255",
+  "port": 9,
+  "aliases": {
+    "skynet": "A1:2B:C3:4D:5E:F7",
+    "hal": "B2:3C:D4:5E:F6:A8"
+  }
+}
+```
+
+Notes:
+
+- If the configuration file does not exist, the application will use sensible defaults (`broadcast`: `255.255.255.255`, `port`: `9`). All fields are optional.
+- Use the `alias` and `remove` commands to manage entries in the config file; the CLI will create the config directory/file as needed.
+
 ## Installation
 
 ```bash
