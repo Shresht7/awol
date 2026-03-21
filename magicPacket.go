@@ -31,13 +31,13 @@ func makeMagicPacket(hardwareAddress net.HardwareAddr) []byte {
 func broadcastMagicPacket(network string, magicPacket []byte) error {
 	conn, err := net.Dial("udp", network)
 	if err != nil {
-		return fmt.Errorf("error establishing UDP connection: %w", err)
+		return fmt.Errorf("Error establishing UDP connection: %w", err)
 	}
 	defer conn.Close()
 
 	_, err = conn.Write(magicPacket)
 	if err != nil {
-		return fmt.Errorf("error sending magic packet: %w", err)
+		return fmt.Errorf("Error sending magic packet: %w", err)
 	}
 	return nil
 }
