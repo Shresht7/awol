@@ -14,14 +14,16 @@ import (
 
 // Config struct to hold the aliases from the config file
 type Config struct {
-	Port    int               `json:"port"`
-	Aliases map[string]string `json:"aliases"`
+	BroadcastAddress string            `json:"broadcast`
+	Port             int               `json:"port"`
+	Aliases          map[string]string `json:"aliases"`
 }
 
 func defaultConfig() Config {
 	return Config{
-		Port:    9,
-		Aliases: make(map[string]string),
+		BroadcastAddress: "255.255.255.255",
+		Port:             9,
+		Aliases:          make(map[string]string),
 	}
 }
 
@@ -58,6 +60,9 @@ func readConfig(cfgPath string) (Config, error) {
 	}
 
 	defaultCfg := defaultConfig()
+	if config.BroadcastAddress == "" {
+		config.BroadcastAddress = defaultCfg.BroadcastAddress
+	}
 	if config.Port == 0 {
 		config.Port = defaultCfg.Port
 	}
@@ -69,6 +74,9 @@ func readConfig(cfgPath string) (Config, error) {
 }
 
 func (c *Config) merge(args Args) {
+	if args.BroadcastAddress != "" {
+		c.BroadcastAddress = args.BroadcastAddress
+	}
 	if args.Port != 0 {
 		c.Port = args.Port
 	}

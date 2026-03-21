@@ -12,12 +12,13 @@ import (
 
 // The command-line arguments
 type Args struct {
-	SubCmd  string
-	Mac     string
-	Help    bool
-	Version bool
-	Port    int
-	Rest    []string
+	SubCmd           string
+	Mac              string
+	BroadcastAddress string
+	Port             int
+	Help             bool
+	Version          bool
+	Rest             []string
 }
 
 // Parse the command-line arguments and return an Args struct containing the parsed values
@@ -25,6 +26,7 @@ func parseCommandLineArgs() Args {
 	help := flag.Bool("help", false, "Show help message")
 	version := flag.Bool("version", false, "Show version information")
 	port := flag.Int("port", 0, "Port number to send the magic packet to")
+	broadcast := flag.String("broadcast", "", "Broadcast address to send the magic packet to")
 	flag.Parse()
 
 	args := flag.Args()
@@ -51,12 +53,13 @@ func parseCommandLineArgs() Args {
 	}
 
 	return Args{
-		SubCmd:  subcmd,
-		Mac:     mac,
-		Help:    *help,
-		Version: *version,
-		Port:    *port,
-		Rest:    rest,
+		SubCmd:           subcmd,
+		Mac:              mac,
+		BroadcastAddress: *broadcast,
+		Port:             *port,
+		Help:             *help,
+		Version:          *version,
+		Rest:             rest,
 	}
 }
 
