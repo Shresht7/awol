@@ -37,7 +37,7 @@ func setAlias(config Config, cfgPath string) {
 	// Validate the MAC address
 	_, err := net.ParseMAC(mac)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error parsing MAC Addresss [%s]: %v\n", mac, err)
+		fmt.Fprintf(os.Stderr, "Error parsing MAC Address [%s]: %v\n", mac, err)
 		return
 	}
 

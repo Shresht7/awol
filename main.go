@@ -70,7 +70,7 @@ func main() {
 	// Parse the MAC address
 	mac, err := net.ParseMAC(macAddress)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error parsing MAC Addresss [%s]: %v\n", macAddress, err)
+		fmt.Fprintf(os.Stderr, "Error parsing MAC Address [%s]: %v\n", macAddress, err)
 		return
 	}
 
