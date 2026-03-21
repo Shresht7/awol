@@ -75,3 +75,24 @@ func (c *Config) merge(args Args) {
 		c.Port = args.Port
 	}
 }
+
+// saveConfig writes the given Config to disk at cfgPath, creating the directory if needed.
+func saveConfig(config Config, cfgPath string) error {
+	if err := os.MkdirAll(path.Dir(cfgPath), 0o755); err != nil {
+		return fmt.Errorf("error creating config directory: %w", err)
+	}
+
+	file, err := os.Create(cfgPath)
+	if err != nil {
+		return fmt.Errorf("error opening config file for writing: %w", err)
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	encoder.SetIndent("", "  ")
+	if err := encoder.Encode(config); err != nil {
+		return fmt.Errorf("error encoding config file: %w", err)
+	}
+
+	return nil
+}
