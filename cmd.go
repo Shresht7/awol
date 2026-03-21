@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"net"
 	"os"
@@ -23,14 +22,12 @@ func listAliases(config Config) {
 	}
 }
 
-func setAlias(config Config, cfgPath string) {
-	alias := flag.Arg(1)
-	mac := flag.Arg(2)
-
-	if alias == "" || mac == "" {
+func setAlias(config Config, cfgPath string, rest []string) {
+	if len(rest) < 2 {
 		fmt.Fprintln(os.Stderr, "Error: Alias and MAC address must be provided for the 'alias' command.")
 		return
 	}
+	alias, mac := rest[0], rest[1]
 
 	// Validate the MAC address
 	_, err := net.ParseMAC(mac)
@@ -54,13 +51,12 @@ func setAlias(config Config, cfgPath string) {
 	fmt.Printf("Alias '%s' set to MAC address '%s'\n", alias, mac)
 }
 
-func removeAlias(config Config, cfgPath string) {
-	alias := flag.Arg(1)
-
-	if alias == "" {
+func removeAlias(config Config, cfgPath string, rest []string) {
+	if len(rest) < 1 {
 		fmt.Fprintln(os.Stderr, "Error: Alias must be provided for the 'remove' command.")
 		return
 	}
+	alias := rest[0]
 
 	// Check if the alias exists in the config
 	if _, exists := config.Aliases[strings.ToLower(alias)]; !exists {

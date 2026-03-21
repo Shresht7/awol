@@ -43,10 +43,10 @@ func main() {
 		listAliases(config)
 		return
 	case "alias":
-		setAlias(config, cfgPath)
+		setAlias(config, cfgPath, args.Rest)
 		return
 	case "remove":
-		removeAlias(config, cfgPath)
+		removeAlias(config, cfgPath, args.Rest)
 		return
 	case "help":
 		showHelp()

@@ -17,6 +17,7 @@ type Args struct {
 	Help    bool
 	Version bool
 	Port    int
+	Rest    []string
 }
 
 // Parse the command-line arguments and return an Args struct containing the parsed values
@@ -40,6 +41,7 @@ func parseCommandLineArgs() Args {
 	return Args{
 		SubCmd:  subcmd,
 		Mac:     mac,
+		Rest:    flag.Args()[1:],
 		Help:    *help,
 		Version: *version,
 		Port:    *port,
