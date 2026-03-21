@@ -46,17 +46,14 @@ func readConfig(cfgPath string) (Config, error) {
 			// If the config file does not exist, return an empty config without error
 			return defaultConfig(), nil
 		}
-		fmt.Fprintf(os.Stderr, "Error opening config file: %v\n", err)
-		return Config{}, err
+		return Config{}, fmt.Errorf("Error opening config file: %w", err)
 	}
 	defer file.Close()
 
 	var config Config
 	decoder := json.NewDecoder(file)
-	err = decoder.Decode(&config)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error decoding config file: %v\n", err)
-		return Config{}, err
+	if err = decoder.Decode(&config); err != nil {
+		return Config{}, fmt.Errorf("Error decoding config file: %w", err)
 	}
 
 	defaultCfg := defaultConfig()
