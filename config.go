@@ -34,7 +34,7 @@ func getConfigPath() string {
 		if err != nil {
 			return "~/.config/awol/config.json"
 		}
-		cfgPath = path.Join(home, ".config/awol/config.json")
+		cfgPath = path.Join(home, ".config", "awol", "config.json")
 	}
 	return cfgPath
 }

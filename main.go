@@ -56,6 +56,9 @@ func main() {
 			os.Exit(1)
 		}
 		return
+	case "config-path":
+		fmt.Println(cfgPath)
+		return
 	case "help":
 		showHelp()
 		return
