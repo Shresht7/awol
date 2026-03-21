@@ -27,24 +27,36 @@ func parseCommandLineArgs() Args {
 	port := flag.Int("port", 0, "Port number to send the magic packet to")
 	flag.Parse()
 
+	args := flag.Args()
 	mac := ""
-	subcmd := flag.Arg(0)
+	subcmd := ""
+	if len(args) > 0 {
+		subcmd = args[0]
+	}
+
 	switch subcmd {
 	case "help":
 		*help = true
 	case "wake", "call", "recall":
-		mac = flag.Arg(1)
+		if len(args) > 1 {
+			mac = args[1]
+		}
 	default:
 		mac = subcmd
+	}
+
+	rest := []string{}
+	if len(args) > 1 {
+		rest = args[1:]
 	}
 
 	return Args{
 		SubCmd:  subcmd,
 		Mac:     mac,
-		Rest:    flag.Args()[1:],
 		Help:    *help,
 		Version: *version,
 		Port:    *port,
+		Rest:    rest,
 	}
 }
 
