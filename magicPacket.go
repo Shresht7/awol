@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"net"
 )
 
@@ -24,4 +25,19 @@ func makeMagicPacket(hardwareAddress net.HardwareAddr) []byte {
 	}
 
 	return packet
+}
+
+// broadcastMagicPacket sends the given payload to the specified network address using UDP.
+func broadcastMagicPacket(network string, magicPacket []byte) error {
+	conn, err := net.Dial("udp", network)
+	if err != nil {
+		return fmt.Errorf("error establishing UDP connection: %w", err)
+	}
+	defer conn.Close()
+
+	_, err = conn.Write(magicPacket)
+	if err != nil {
+		return fmt.Errorf("error sending magic packet: %w", err)
+	}
+	return nil
 }

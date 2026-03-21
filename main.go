@@ -91,20 +91,3 @@ func main() {
 		fmt.Printf("Magic packet sent to %s\n", macAddress)
 	}
 }
-
-// Broadcasts the given payload (magic packet) to the specified network address using UDP
-func broadcastMagicPacket(network string, magicPacket []byte) error {
-	// Establish a UDP connection to the broadcast address
-	conn, err := net.Dial("udp", network)
-	if err != nil {
-		return fmt.Errorf("Error establishing UDP connection: %v", err)
-	}
-	defer conn.Close()
-
-	// Write the magic packet to the connection to send it
-	_, err = conn.Write(magicPacket)
-	if err != nil {
-		return fmt.Errorf("Error sending magic packet: %v", err)
-	}
-	return nil
-}
