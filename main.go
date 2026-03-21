@@ -78,16 +78,10 @@ func main() {
 	magicPacket := makeMagicPacket(mac)
 
 	// Send the magic packet via UDP broadcast (standard port for Wake-on-LAN is 9)
-	conn, err := net.Dial("udp", fmt.Sprintf("255.255.255.255:%d", config.Port))
+	broadcastAddress := fmt.Sprintf("%s:%d", "255.255.255.255", config.Port)
+	err = broadcastMagicPacket(broadcastAddress, magicPacket)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error establishing UDP connection: %v\n", err)
-		return
-	}
-	defer conn.Close()
-
-	_, err = conn.Write(magicPacket)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error sending magic packet: %v\n", err)
+		fmt.Fprintf(os.Stderr, "%v\n", err)
 		return
 	}
 
@@ -96,4 +90,21 @@ func main() {
 	} else {
 		fmt.Printf("Magic packet sent to %s\n", macAddress)
 	}
+}
+
+// Broadcasts the given payload (magic packet) to the specified network address using UDP
+func broadcastMagicPacket(network string, magicPacket []byte) error {
+	// Establish a UDP connection to the broadcast address
+	conn, err := net.Dial("udp", network)
+	if err != nil {
+		return fmt.Errorf("Error establishing UDP connection: %v", err)
+	}
+	defer conn.Close()
+
+	// Write the magic packet to the connection to send it
+	_, err = conn.Write(magicPacket)
+	if err != nil {
+		return fmt.Errorf("Error sending magic packet: %v", err)
+	}
+	return nil
 }
