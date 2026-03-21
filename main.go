@@ -34,19 +34,28 @@ func main() {
 	config, err := readConfig(cfgPath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error reading config: %v\n", err)
-		return
+		os.Exit(1)
 	}
 	config.merge(args)
 
 	switch args.SubCmd {
 	case "list":
-		listAliases(config)
+		if err := listAliases(config); err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
 		return
 	case "alias":
-		setAlias(config, cfgPath, args.Rest)
+		if err := setAlias(config, cfgPath, args.Rest); err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
 		return
 	case "remove":
-		removeAlias(config, cfgPath, args.Rest)
+		if err := removeAlias(config, cfgPath, args.Rest); err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
 		return
 	case "help":
 		showHelp()
@@ -77,7 +86,7 @@ func main() {
 	mac, err := net.ParseMAC(macAddress)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error parsing MAC Address [%s]: %v\n", macAddress, err)
-		return
+		os.Exit(1)
 	}
 
 	// Create the magic packet
@@ -88,7 +97,7 @@ func main() {
 	err = broadcastMagicPacket(broadcastAddress, magicPacket)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
-		return
+		os.Exit(1)
 	}
 
 	if macAlias != "" {

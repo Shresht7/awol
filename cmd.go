@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"net"
-	"os"
 	"sort"
 	"strings"
 )
@@ -12,10 +11,10 @@ import (
 // COMMANDS
 // --------
 
-func listAliases(config Config) {
+func listAliases(config Config) error {
 	if len(config.Aliases) == 0 {
 		fmt.Println("No aliases defined in the config file.")
-		return
+		return nil
 	}
 
 	keys := make([]string, 0, len(config.Aliases))
@@ -27,20 +26,19 @@ func listAliases(config Config) {
 	for _, alias := range keys {
 		fmt.Printf("%s\t%s\n", alias, config.Aliases[alias])
 	}
+	return nil
 }
 
-func setAlias(config Config, cfgPath string, rest []string) {
+func setAlias(config Config, cfgPath string, rest []string) error {
 	if len(rest) < 2 {
-		fmt.Fprintln(os.Stderr, "Error: Alias and MAC address must be provided for the 'alias' command.")
-		return
+		return fmt.Errorf("Alias and MAC address must be provided for the 'alias' command")
 	}
 	alias, mac := rest[0], rest[1]
 
 	// Validate the MAC address
 	parsed, err := net.ParseMAC(mac)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error parsing MAC Address [%s]: %v\n", mac, err)
-		return
+		return fmt.Errorf("Error parsing MAC Address [%s]: %w", mac, err)
 	}
 
 	// Normalize: aliases are lowercase, MACs are uppercase
@@ -55,33 +53,31 @@ func setAlias(config Config, cfgPath string, rest []string) {
 	config.Aliases[normalizedAlias] = normalizedMAC
 
 	if err := saveConfig(config, cfgPath); err != nil {
-		fmt.Fprintf(os.Stderr, "Error saving config: %v\n", err)
-		return
+		return err
 	}
 
 	fmt.Printf("Alias '%s' set to MAC address '%s'\n", normalizedAlias, normalizedMAC)
+	return nil
 }
 
-func removeAlias(config Config, cfgPath string, rest []string) {
+func removeAlias(config Config, cfgPath string, rest []string) error {
 	if len(rest) < 1 {
-		fmt.Fprintln(os.Stderr, "Error: Alias must be provided for the 'remove' command.")
-		return
+		return fmt.Errorf("Alias must be provided for the 'remove' command")
 	}
 	alias := rest[0]
 
 	// Check if the alias exists in the config
 	if _, exists := config.Aliases[strings.ToLower(alias)]; !exists {
-		fmt.Fprintf(os.Stderr, "Error: Alias '%s' does not exist in the config file.\n", alias)
-		return
+		return fmt.Errorf("Alias '%s' does not exist in the config file", alias)
 	}
 
 	// Remove the alias from the config
 	delete(config.Aliases, strings.ToLower(alias))
 
 	if err := saveConfig(config, cfgPath); err != nil {
-		fmt.Fprintf(os.Stderr, "Error saving config: %v\n", err)
-		return
+		return err
 	}
 
 	fmt.Printf("Alias '%s' removed from the config file.\n", alias)
+	return nil
 }
