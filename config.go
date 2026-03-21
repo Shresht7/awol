@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strings"
 )
 
 // -------------
@@ -71,6 +72,12 @@ func (c *Config) merge(args Args) {
 	if args.Port != 0 {
 		c.Port = args.Port
 	}
+}
+
+// lookupAlias resolves an alias (case-insensitive) to its stored MAC address.
+func (c Config) lookupAlias(alias string) (string, bool) {
+	mac, ok := c.Aliases[strings.ToLower(alias)]
+	return mac, ok
 }
 
 // saveConfig writes the given Config to disk at cfgPath, creating the directory if needed.

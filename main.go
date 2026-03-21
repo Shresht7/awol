@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"strings"
 )
 
 // ----
@@ -77,7 +76,7 @@ func main() {
 	macAlias := ""
 
 	// Check if the provided MAC address is an alias in the config
-	if val, exists := config.Aliases[strings.ToLower(args.Mac)]; exists {
+	if val, exists := config.lookupAlias(args.Mac); exists {
 		macAddress = val
 		macAlias = args.Mac
 	}

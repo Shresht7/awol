@@ -67,7 +67,7 @@ func removeAlias(config Config, cfgPath string, rest []string) error {
 	alias := rest[0]
 
 	// Check if the alias exists in the config
-	if _, exists := config.Aliases[strings.ToLower(alias)]; !exists {
+	if _, exists := config.lookupAlias(alias); !exists {
 		return fmt.Errorf("Alias '%s' does not exist in the config file", alias)
 	}
 
