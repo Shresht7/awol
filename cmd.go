@@ -30,25 +30,29 @@ func setAlias(config Config, cfgPath string, rest []string) {
 	alias, mac := rest[0], rest[1]
 
 	// Validate the MAC address
-	_, err := net.ParseMAC(mac)
+	parsed, err := net.ParseMAC(mac)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error parsing MAC Address [%s]: %v\n", mac, err)
 		return
 	}
+
+	// Normalize: aliases are lowercase, MACs are uppercase
+	normalizedAlias := strings.ToLower(alias)
+	normalizedMAC := strings.ToUpper(parsed.String())
 
 	// Update the config with the new alias
 	if config.Aliases == nil {
 		config.Aliases = make(map[string]string)
 	}
 
-	config.Aliases[strings.ToLower(alias)] = mac
+	config.Aliases[normalizedAlias] = normalizedMAC
 
 	if err := saveConfig(config, cfgPath); err != nil {
 		fmt.Fprintf(os.Stderr, "Error saving config: %v\n", err)
 		return
 	}
 
-	fmt.Printf("Alias '%s' set to MAC address '%s'\n", alias, mac)
+	fmt.Printf("Alias '%s' set to MAC address '%s'\n", normalizedAlias, normalizedMAC)
 }
 
 func removeAlias(config Config, cfgPath string, rest []string) {
