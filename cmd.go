@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -17,8 +18,14 @@ func listAliases(config Config) {
 		return
 	}
 
-	for alias, mac := range config.Aliases {
-		fmt.Printf("%s\t%s\n", alias, mac)
+	keys := make([]string, 0, len(config.Aliases))
+	for alias := range config.Aliases {
+		keys = append(keys, alias)
+	}
+	sort.Strings(keys)
+
+	for _, alias := range keys {
+		fmt.Printf("%s\t%s\n", alias, config.Aliases[alias])
 	}
 }
 
