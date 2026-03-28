@@ -79,8 +79,8 @@ func showHelp() {
 	help.WriteString("  --version\t\tShow version information\n")
 	help.WriteString("  --help\t\tShow this help message\n\n")
 	help.WriteString("Example:\n")
-	help.WriteString("  awol A1:2B:C3:4D:5E:F7\t# Send magic packet to the specified MAC address\n")
-	help.WriteString("  awol wake skynet --port 7\t# Send magic packet to the specified MAC address using an alias on port 7\n")
+	help.WriteString("  awol wake skynet\t# Send magic packet to the specified MAC address using an alias\n")
+	help.WriteString("  awol wake --port 7 A1:2B:C3:4D:5E:F7\t# Send magic packet to the specified MAC address on port 7\n")
 	fmt.Print(help.String())
 }
 
