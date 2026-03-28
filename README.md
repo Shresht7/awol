@@ -4,6 +4,9 @@ A simple command-line-interface to dispatch Wake-on-LAN magic packets!
 
 This allows you to ***remotely*** switch on a computer/machine on your local network, (as long as it supports Wake-on-LAN and is configured to do so).
 
+> [!WARNING]
+> Doesn't work as of now as far as I can tell, but the code is there and should work in theory. Unsure if it's a bug in the code or an issue with my machines. 
+
 ## Wake-on-LAN
 
 Wake-on-LAN (WoL) is a networking standard that allows a computer to be turned on or awakened from a low power state remotely. This is achieved by sending a specially crafted network packet, known as a _"magic packet"_ to the target computer's network interface. The magic packet contains the target computer's MAC address repeated multiple (16) times, which allows the network interface to recognize it and trigger the power-on process.
