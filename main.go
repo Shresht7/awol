@@ -95,8 +95,9 @@ func main() {
 	magicPacket := makeMagicPacket(mac)
 
 	// Send the magic packet via UDP broadcast (standard port for Wake-on-LAN is 9)
+	sourceAddress := args.SourceAddress
 	broadcastAddress := fmt.Sprintf("%s:%d", config.BroadcastAddress, config.Port)
-	err = broadcastMagicPacket(broadcastAddress, magicPacket)
+	err = broadcastMagicPacket(sourceAddress, broadcastAddress, magicPacket)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)

@@ -14,6 +14,7 @@ import (
 type Args struct {
 	SubCmd           string
 	Mac              string
+	SourceAddress    string
 	BroadcastAddress string
 	Port             int
 	Help             bool
@@ -26,6 +27,7 @@ func parseCommandLineArgs() Args {
 	help := flag.Bool("help", false, "Show help message")
 	version := flag.Bool("version", false, "Show version information")
 	port := flag.Int("port", 0, "Port number to send the magic packet to")
+	source := flag.String("source", "", "Source IP address to use for sending the magic packet")
 	broadcast := flag.String("broadcast", "", "Broadcast address to send the magic packet to")
 	flag.Parse()
 
@@ -55,6 +57,7 @@ func parseCommandLineArgs() Args {
 	return Args{
 		SubCmd:           subcmd,
 		Mac:              mac,
+		SourceAddress:    *source,
 		BroadcastAddress: *broadcast,
 		Port:             *port,
 		Help:             *help,
@@ -75,6 +78,7 @@ func showHelp() {
 	help.WriteString("  remove <alias>\tRemove an existing alias from the config file\n")
 	help.WriteString("  config-path\t\tShow the path to the configuration file\n\n")
 	help.WriteString("Flags:\n")
+	help.WriteString("  --source <address>\tSpecify the source IP address to use for sending the magic packet\n")
 	help.WriteString("  --broadcast <address>\tSpecify the broadcast address to send the magic packet to (default: 255.255.255.255)\n")
 	help.WriteString("  --port <number>\tSpecify the port number to send the magic packet to (default: 9)\n")
 	help.WriteString("  --version\t\tShow version information\n")
@@ -85,7 +89,7 @@ func showHelp() {
 	fmt.Print(help.String())
 }
 
-const version = "v0.2.0"
+const version = "v0.2.1"
 
 func showVersion() {
 	fmt.Printf("%s\n", version)

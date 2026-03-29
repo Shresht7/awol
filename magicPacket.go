@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"net"
+	"time"
 )
 
 // ------------
@@ -28,16 +29,40 @@ func makeMagicPacket(hardwareAddress net.HardwareAddr) []byte {
 }
 
 // broadcastMagicPacket sends the given payload to the specified network address using UDP.
-func broadcastMagicPacket(network string, magicPacket []byte) error {
-	conn, err := net.Dial("udp", network)
+func broadcastMagicPacket(source, network string, magicPacket []byte) error {
+	// Validate the source IP address if provided
+	sourceIP := net.ParseIP(source)
+	if source != "" && sourceIP == nil {
+		return fmt.Errorf("Invalid source IP address: %s", source)
+	}
+
+	// If a source IP address is provided, use it; otherwise, let the system choose the source IP
+	sourceAddress := &net.UDPAddr{IP: sourceIP, Port: 0}
+
+	// Resolve the broadcast address
+	broadcastAddress, err := net.ResolveUDPAddr("udp4", network)
+	if err != nil {
+		return fmt.Errorf("Invalid broadcast address: %s", network)
+	}
+
+	// Establish a UDP connection to the broadcast address
+	conn, err := net.DialUDP("udp", sourceAddress, broadcastAddress)
 	if err != nil {
 		return fmt.Errorf("Error establishing UDP connection: %w", err)
 	}
-	defer conn.Close()
+	defer conn.Close() // Ensure the connection is closed when we're done, even if an error occurs
 
-	_, err = conn.Write(magicPacket)
+	// Set a write deadline to prevent hanging indefinitely if the network is unreachable
+	conn.SetWriteDeadline(time.Now().Add(3 * time.Second))
+
+	// Write the magic packet to the UDP connection
+	n, err := conn.Write(magicPacket)
 	if err != nil {
 		return fmt.Errorf("Error sending magic packet: %w", err)
 	}
+	if n != len(magicPacket) {
+		return fmt.Errorf("Partial write: only %d of %d bytes sent", n, len(magicPacket))
+	}
+
 	return nil
 }
