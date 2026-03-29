@@ -75,6 +75,7 @@ func showHelp() {
 	help.WriteString("  remove <alias>\tRemove an existing alias from the config file\n")
 	help.WriteString("  config-path\t\tShow the path to the configuration file\n\n")
 	help.WriteString("Flags:\n")
+	help.WriteString("  --broadcast <address>\tSpecify the broadcast address to send the magic packet to (default: 255.255.255.255)\n")
 	help.WriteString("  --port <number>\tSpecify the port number to send the magic packet to (default: 9)\n")
 	help.WriteString("  --version\t\tShow version information\n")
 	help.WriteString("  --help\t\tShow this help message\n\n")
